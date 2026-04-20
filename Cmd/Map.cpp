@@ -8,8 +8,7 @@ namespace jb
 std::string CmdMap::execute() const
 {
     std::stringstream out;
-    Position start{0,0};
-    
+    Position start{-1,-1};  
     Position end{m_grid.getRowSize(),m_grid.getColSize()};
     int prevX = start.getX();
     for (auto it = m_grid.begin(start, end); it != m_grid.end(start, end); ++it)
@@ -19,7 +18,7 @@ std::string CmdMap::execute() const
             out << '\n';
             prevX = it.getCurrentX();
         }
-        out << (*it)->symbol(); // or however you print
+        out << (*it)->symbol(); 
     }
     out << std::endl;
 

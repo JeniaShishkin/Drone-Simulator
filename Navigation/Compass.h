@@ -15,7 +15,7 @@ public:
 	Compass(int initialHeadingSteps, StepsOf90_t dummy);
 
 	int getHeading() const { return m_headingDegrees; }
-	Compass roatateInStepsOf90(int steps) const;
+	Compass rotateInStepsOf90(int steps) const;
 
 private:
 	struct InDegrees_t {};
@@ -36,6 +36,7 @@ extern Compass NORTH;
 extern Compass EAST;
 extern Compass SOUTH;
 extern Compass WEST;
+
 
 } // jb
 

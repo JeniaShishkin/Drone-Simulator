@@ -81,12 +81,11 @@ const WorldGrid::const_iterator& WorldGrid::const_iterator::operator++()
 { 	
     int curX = getCurrentX();
     int curY = getCurrentY();
-    if (curX == m_end.getX() && curY == m_end.getY()) { return *this; }
 
-    if (getCurrentY() + 1 < m_end.getY()) { m_current = Position{curX, curY + 1}; }
-	
+    if (curY < m_end.getY()) { m_current = Position{curX, curY + 1}; }
+
     else { m_current = Position{curX + 1, m_start.getY()}; }
-
+    
     return *this;
 }
 
@@ -97,12 +96,12 @@ bool WorldGrid::const_iterator::operator!=(const const_iterator& other) const
 
 const WorldGrid::const_iterator WorldGrid::begin(const Position& start, const Position& end) const
 {
-    return const_iterator(this, start, end);
+    return const_iterator{this, start, end};
 }
 
 const WorldGrid::const_iterator WorldGrid::end(const Position& start, const Position& end) const
 {
-    return const_iterator(this, start, end);
+    return const_iterator{this, Position{end.getX() + 1, start.getY()}, end};
 }
 
 void initAsciiTable()

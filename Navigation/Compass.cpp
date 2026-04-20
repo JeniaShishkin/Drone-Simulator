@@ -1,12 +1,14 @@
 #include "Compass.h"
+#include <iostream>
 
 namespace jb
 {
 
-Compass NORTH{ 0, Compass::STEPS_OF_90 };
+Compass NORTH{ 0, Compass::STEPS_OF_90};
 Compass EAST{ 1, Compass::STEPS_OF_90};
 Compass SOUTH{ 2, Compass::STEPS_OF_90};
 Compass WEST{ 3, Compass::STEPS_OF_90};
+
 
 static int toBoundedDegrees(int headingSteps, int stepSize)
 {
@@ -26,7 +28,7 @@ Compass::Compass(int initialHeading, InDegrees_t dummy)
 {
 }
 
-Compass Compass::roatateInStepsOf90(int steps) const
+Compass Compass::rotateInStepsOf90(int steps) const
 {
 	return Compass(m_headingDegrees + steps * 90, IN_DEGREES);
 }
@@ -43,12 +45,12 @@ bool operator<(const Compass &a, const Compass &b)
 
 void turnLeft(Compass *compass)
 {
-	*compass = compass->roatateInStepsOf90(-1);
+	*compass = compass->rotateInStepsOf90(-1);
 }
 
 void turnRight(Compass *compass)
 {
-	*compass = compass->roatateInStepsOf90(1);
+	*compass = compass->rotateInStepsOf90(1);
 }
 
 } // jb

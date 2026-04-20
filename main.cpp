@@ -44,7 +44,6 @@ struct CmdUnknown : public Command
 static NaiveNetworkHandler nh{9000};
 static size_t socketId;
 
-
 int main()
 {
     static std::string input;
@@ -55,7 +54,6 @@ int main()
 
     Drone currentDrone = DRONE_CONFIGS.at(input)();
  
-    std::cout << !currentDrone.doLoop << " " << !currentDrone.reachedExit() << std::endl;
 	while (currentDrone.doLoop && !currentDrone.reachedExit())
 	{
         nh.GetInput(&socketId, &input);
@@ -64,8 +62,8 @@ int main()
             nh.PutOutput(socketId,"> ");
             continue;
 		}
-
-		Command &cmd = parseCommand(currentDrone.getCommand(), input);
+        
+		const Command &cmd = parseCommand(currentDrone.getCommand(), input);
 		std::string buffer = cmd.execute();
         nh.PutOutput(socketId, buffer);
         nh.PutOutput(socketId,"> ");
