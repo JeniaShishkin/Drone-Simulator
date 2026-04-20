@@ -39,7 +39,21 @@ Command &parseCommand(const CommandsMap &commands, const std::string &s);
 struct CmdUnknown : public Command
 {
 	virtual std::string execute() const override { std::stringstream buffer; buffer << "ERROR: Unknown command\n"; return buffer.str(); }
+    virtual unsigned int getEnergyConsumption() const override { return 0; }
 } CMD_UNKNOWN;
+
+template<class CmdT, unsigned int CONSUMPTION>
+struct FixedConsumption : public CmdT
+{
+    FixedConsumption(const WorldGrid *grid, Position *position, const Compass *compass) : CmdT(grid, position, compass) { }
+    FixedConsumption(Compass *compass) : CmdT(compass) { }
+    FixedConsumption(const WorldGrid& grid) : CmdT(grid) { }
+    FixedConsumption(const Context &ctx) : CmdT(ctx) { }
+    FixedConsumption(Context &ctx, const Sensor& s) : CmdT(ctx, s) { }
+    FixedConsumption(std::function<void()> func) : CmdT(func) { }
+   
+    virtual unsigned int getEnergyConsumption() const override { return CONSUMPTION; } 
+};
 
 static NaiveNetworkHandler nh{9000};
 static size_t socketId;
@@ -53,18 +67,17 @@ int main()
 	Position p{0,1};
 	Compass c{NORTH};
     Context ctx{theWorld, p, c};
-	CmdForward forward{&theWorld, &p, &c};
-	CmdTurnLeft left{&c};
-	CmdTurnRight right{&c};
-	CmdPointOfView pov{ctx};
-	CmdMap map{theWorld};
+	FixedConsumption<CmdForward, 10> forward{&theWorld, &p, &c};
+	FixedConsumption<CmdTurnLeft, 15> left{&c};
+	FixedConsumption<CmdTurnRight, 20> right{&c};
+	FixedConsumption<CmdPointOfView, 0> pov{ctx};
+	FixedConsumption<CmdMap, 0> map{theWorld};
 	CircularSensor c_sensor{};
 	WideSensor w_sensor{};
 	DistanceSensor d_sensor{};
-    SetSensor s_a{ctx, c_sensor};
-    SetSensor s_b{ctx, w_sensor};
-    SetSensor s_c{ctx, d_sensor};
-
+    FixedConsumption<SetSensor, 5> s_a{ctx, c_sensor};
+    FixedConsumption<SetSensor, 10> s_b{ctx, w_sensor};
+    FixedConsumption<SetSensor, 15> s_c{ctx, d_sensor};
 	bool doLoop = true;
 	CmdExecute exitLoop{[&doLoop]() { doLoop=false;} };
 
@@ -89,7 +102,7 @@ int main()
             nh.PutOutput(socketId,"> ");
             continue;
 		}
-        
+
 		Command &cmd = parseCommand(commands, input);
 		std::string buffer = cmd.execute();
         nh.PutOutput(socketId, buffer);

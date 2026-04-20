@@ -14,7 +14,7 @@ This project is a drone simulation application built with a strong focus on main
 - **Agile methodology** guides development:
   - Incremental improvements and frequent refactoring.
   - Responsive adaptation to requirements.
-  - Emphasis on working code, collaboration, and continuous enhancement.
+  - Emphasis on working code and continuous enhancement.
 
 ## Project Structure
 
@@ -58,6 +58,16 @@ Tile types for the world grid:
 - `ExitTile.h` — Exit tile
 - `Tile.cpp`, `Tile.h` — Abstract base tile class
 - `WallTile.h` — Wall tile
+
+### Networking/ Folder
+Handles port-based network communication for the simulator:
+- `NetworkHandler.cpp`, `NetworkHandler.h` — Core network manager using TCP sockets and Winsock.
+  - Binds to a configured port and listens for incoming client connections.
+  - Uses non-blocking sockets plus `select()` to manage multiple active connections.
+  - Reads newline-terminated input from connected clients and sends responses back over the same socket.
+- `NaiveNetworkHandler.cpp`, `NaiveNetworkHandler.h` — Simple concrete implementation of `NetworkHandler`.
+
+The networking layer enables remote control and telemetry by accepting commands over a network port. Incoming client connections are managed through a socket listener, and communication is exchange-driven using port-based TCP streams.
 
 ## Existing Commands
 

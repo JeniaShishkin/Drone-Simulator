@@ -11,7 +11,11 @@ struct Command : private BaseEssentials
 {
 	Command() = default;
 	virtual std::string execute() const = 0;
+	virtual unsigned int getEnergyConsumption() const { return 0; }
+
 	virtual ~Command() = default;
+
+	
 
 
 };
