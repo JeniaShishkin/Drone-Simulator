@@ -6,8 +6,6 @@
 
 namespace jb
 {
-
-
 std::stringstream CircularSensor::scan(const WorldGrid& grid, const Position& pos, const Compass& compass) const 
 { 
     std::stringstream out;

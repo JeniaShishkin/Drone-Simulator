@@ -10,7 +10,7 @@ namespace jb
 
 
 inline const BoundsMap CIRCULAR_BOUNDS {
-    { 0,   { {-2, -2}, { 1,  1} } }, // NORTH
+    { 0,   { {-2, -1}, { 1,  1} } }, // NORTH
     { 90,  { {-1, -1},  {1,  2 }} }, // EAST
     { 180, { {-1, -1},  {2,  1 }} }, // SOUTH
     { 270, { {-1, -2},  {1,  1 }} }  // WEST
