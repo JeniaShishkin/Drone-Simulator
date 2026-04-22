@@ -69,18 +69,45 @@ Handles port-based network communication for the simulator:
 
 The networking layer enables remote control and telemetry by accepting commands over a network port. Incoming client connections are managed through a socket listener, and communication is exchange-driven using port-based TCP streams.
 
-## Existing Commands
+## Implemented Commands
 
-The simulation supports the following commands for controlling the drone:
+The simulation supports the following commands for controlling the drone. All commands (except "exit") consume energy based on a fixed consumption model, which can be configured before compilation.
 
-- **Forward**: Moves the drone one step forward in its current direction, checking for obstacles.
-- **TurnLeft**: Rotates the drone 90 degrees to the left.
-- **TurnRight**: Rotates the drone 90 degrees to the right.
-- **Map**: Displays the entire world grid.
-- **PointOfView**: Shows what the drone can see from its current position and orientation.
-- **SetSensor**: Creates a sensor for obstacle detection.
-- **Execute**: Executes a custom function or operation.
+## Sensor Types and Viewing Bounds
+
+The drone can be equipped with different sensors, each with unique viewing ranges:
+
+- **Circular Sensor** (`s_a`): Provides a narrow circular field of view around the drone with configurable bounds per heading.
+  - NORTH: `{ {-2, -1}, { 1, 1} }`
+  - EAST: `{ {-1, -1}, { 1, 2} }`
+  - SOUTH: `{ {-1, -1}, { 2, 1} }`
+  - WEST: `{ {-1, -2}, { 1, 1} }`
+
+- **Wide Sensor** (`s_b`): Provides an extended field of view with wider coverage.
+  - NORTH: `{ {-1, -1}, {-1, 2} }`
+  - EAST: `{ {-2, 1}, { 2, 1} }`
+  - SOUTH: `{ {1, -2}, { 1, 2} }`
+  - WEST: `{ {-2, -1}, { 2, -1} }`
+
+- **Distance Sensor** (`s_c`): Specialized for detecting objects at greater distances.
+  - NORTH: `{ {-3, -2}, {-1, 2} }`
+  - EAST: `{ {-2, 1}, { 2, 3} }`
+  - SOUTH: `{ {1, -2}, { 3, 2} }`
+  - WEST: `{ {-2, -3}, {-2, -1} }`
+
+## Energy System
+
+The drone operates with a finite energy budget. Each command consumes a fixed amount of energy through the `FixedConsumption` template class. Commands cannot execute if insufficient energy is available. The exit command has no energy cost and allows the drone to terminate the simulation at any time.
+
+## Tile System
+
+The world grid is composed of different tile types:
+
+- **Empty Tile** (` `): Passable, allows drone to occupy.
+- **Wall Tile** (`#`): Impassable, blocks drone movement.
+- **Exit Tile** (`E`): Passable goal tile that triggers exit condition when reached.
 
 ## Goal
 
 This repository is intended as an example of building a small system with clean, extensible design while following agile development practices and SOLID principles.
+
